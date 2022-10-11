@@ -8,11 +8,18 @@ router.get('/inventions/:key?', (req, res) => {
 	const inventions = keyToUpperCase(Inventions.list(), req.params.key ?? 'author');
 	res.send({ 
 		inventions, 
-		sources: [
-			'https://www.thoughtco.com/20th-century-timeline-1992486',
-			'https://en.wikipedia.org/wiki',
-		] 
 	});
 });
+router.get('/inventions/sort/:orderType?', (req,res) => { 
+let sortedList = Inventions.list().sort(
+  (e, m) => e.creationDate - m.creationDate
+);
+let listToReturn = () => {
+  if (req.params.orderType == "asc") return sortedList;
+  else if (req.params.orderType == "desc") return sortedList.reverse();
+  else return "Something went wrong dude :/";
+}
 
+res.send(listToReturn())
+});
 module.exports = router;
